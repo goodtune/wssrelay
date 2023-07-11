@@ -26,7 +26,13 @@ def wssrelay(github_token, repository, organization):
     hook = first(thing.get_hooks(), key=lambda x: x.name == "cli")
 
     if hook is None:
-        raise click.ClickException("Necessary hook does not exist.")
+        hook = thing.create_hook(
+            "cli",
+            {
+                "url": "wss://webhook-forwarder.github.com/forward",
+                "content_type": "json",
+            },
+        )
 
     click.secho(f"{hook.raw_data['ws_url']}", fg="red")
 
